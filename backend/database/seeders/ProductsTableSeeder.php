@@ -9,6 +9,7 @@ class ProductsTableSeeder extends Seeder
 {
     public function run()
     {
+        // Insert sample products into the database
         Product::insert([
             [
                 'name' => 'Laptop',

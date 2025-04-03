@@ -10,24 +10,24 @@ class UsersTableSeeder extends Seeder
 {
     public function run()
     {
+        // Insert sample users into the database
         User::insert([
             [
-                'name' => 'Employee',
+                'name' => 'Employee', // Employee account
                 'email' => 'employee@example.com',
-                'password' => Hash::make('password123'),
-                'role' => 'employee',
+                'password' => Hash::make('password123'), // Hashed password for security
+                'role' => 'employee', // Role assigned as 'employee'
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
-                'name' => 'Customer',
+                'name' => 'Customer', // Customer account
                 'email' => 'customer@example.com',
-                'password' => Hash::make('password123'),
-                'role' => 'customer',
+                'password' => Hash::make('password123'), // Hashed password for security
+                'role' => 'customer', // Role assigned as 'customer'
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
-            
         ]);
     }
 }
