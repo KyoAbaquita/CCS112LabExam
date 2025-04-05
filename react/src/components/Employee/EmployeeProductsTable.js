@@ -100,7 +100,7 @@ const EmployeeProductsTable = () => {
                                 <td>₱{product.price}</td>
                                 <td>{product.stock}</td>
                                 <td>{product.image}</td>
-                                <td>
+                                <td className="d-flex">
                                     <button className="btn btn-warning btn-sm me-2" onClick={() => handleEdit(product)}>Edit</button>
                                     <button className="btn btn-danger btn-sm" onClick={() => handleDelete(product.id)}>Delete</button>
                                 </td>
