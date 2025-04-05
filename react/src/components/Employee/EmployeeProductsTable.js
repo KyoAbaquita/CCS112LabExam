@@ -97,7 +97,7 @@ const EmployeeProductsTable = () => {
                             <tr key={product.id}>
                                 <td>{product.name}</td>
                                 <td>{product.description}</td>
-                                <td>₱{product.price}</td>
+                                <td>₱{new Intl.NumberFormat().format(product.price)}</td>
                                 <td>{product.stock}</td>
                                 <td>{product.image}</td>
                                 <td className="d-flex">

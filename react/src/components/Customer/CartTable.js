@@ -134,9 +134,9 @@ const CartTable = () => {
             cartItems.map((item) => (
               <tr key={item.id}>
                 <td>{item.name}</td>
-                <td>₱{item.price}</td>
+                <td>₱{new Intl.NumberFormat().format(item.price)}</td>
                 <td>{item.quantity}</td>
-                <td>₱{item.price * item.quantity}</td>
+                <td>₱{new Intl.NumberFormat().format(item.price * item.quantity)}</td>
                 <td>
                   <button className="btn btn-danger" onClick={() => handleRemoveItem(item.id)}>
                     Remove
@@ -179,7 +179,7 @@ const CartTable = () => {
                 {checkoutStep === 1 ? (
                   <>
                     <p>Total Quantity: {totalItems}</p>
-                    <p>Total Price: ₱{totalPrice}</p>
+                    <p>Total Price: ₱{new Intl.NumberFormat().format(totalPrice)}</p>
                   </>
                 ) : (
                   <>

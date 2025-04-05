@@ -161,7 +161,7 @@ const OrdersTable = () => {
             {filteredOrders.map((order) => (
               <tr key={order.id}>
                 <td>{order.id}</td>
-                <td>₱{parseFloat(order.total_price).toFixed(2)}</td>
+                <td>₱{new Intl.NumberFormat().format(parseFloat(order.total_price).toFixed(2))}</td>
                 <td>
                   {order.checkout_date
                     ? new Date(order.checkout_date).toLocaleString()
@@ -210,7 +210,7 @@ const OrdersTable = () => {
                     {orderItems.map((item) => (
                       <li key={item.id}>
                         {item.product?.name || "Unknown Product"} - ₱
-                        {(item.product?.price * item.quantity) || 0}
+                        {new Intl.NumberFormat().format(item.product?.price * item.quantity) || 0}
                       </li>
                     ))}
                   </ul>
@@ -256,7 +256,7 @@ const OrdersTable = () => {
                   {orderItems.map((item) => (
                     <li key={item.id}>
                       {item.product?.name || "Unknown Product"} -{" "}
-                      ₱{(item.product?.price * item.quantity) || 0}
+                      ₱{new Intl.NumberFormat().format(item.product?.price * item.quantity) || 0}
                     </li>
                   ))}
                 </ul>
