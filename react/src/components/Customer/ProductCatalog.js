@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 import axios from "axios";
+import './Product.css';
 
 const ProductCatalog = ({ products }) => {
     const [showModal, setShowModal] = useState(false);
@@ -41,7 +42,7 @@ const ProductCatalog = ({ products }) => {
                     quantity: quantity,
                 },
                 {
-                    headers: { Authorization: `Bearer ${token}` }, // ✅ Move headers here
+                    headers: { Authorization: `Bearer ${token}` }, 
                 }
             );
     
@@ -62,7 +63,7 @@ const ProductCatalog = ({ products }) => {
                 products.map((product) => (
                     <div key={product.id} className="col-md-4 mb-4">
                         <div className="card">
-                            <img src={product.image} className="card-img-top" alt={product.name} />
+                            <img src={product.image} className="card-img-top product-image" alt={product.name} />
                             <div className="card-body">
                                 <h5 className="card-title">{product.name}</h5>
                                 <p className="card-text">{product.description}</p>
