@@ -14,7 +14,7 @@ class UsersTableSeeder extends Seeder
         User::insert([
             [
                 'name' => 'Employee', // Employee account
-                'email' => 'employee@example.com',
+                'email' => 'employee@gmail.com',
                 'password' => Hash::make('password123'), // Hashed password for security
                 'role' => 'employee', // Role assigned as 'employee'
                 'created_at' => now(),
@@ -22,7 +22,7 @@ class UsersTableSeeder extends Seeder
             ],
             [
                 'name' => 'Customer', // Customer account
-                'email' => 'customer@example.com',
+                'email' => 'customer@gmail.com',
                 'password' => Hash::make('password123'), // Hashed password for security
                 'role' => 'customer', // Role assigned as 'customer'
                 'created_at' => now(),
