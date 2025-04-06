@@ -10,23 +10,29 @@ use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller
 {
-    // Handles the checkout process
+    /**
+     * Handles the checkout process for an authenticated user
+     */
     public function checkout(Request $request)
     {
-        $user = Auth::user(); // Get the authenticated user
+        $user = Auth::user(); // Get the currently authenticated user
+
+        // Return unauthorized if no user is authenticated
         if (!$user) {
             return response()->json(['message' => 'Unauthorized'], 401);
         }
 
-        // Retrieve cart items for the user
+        // Retrieve the user's cart items along with product details
         $cartItems = Cart::where('user_id', $user->id)->with('product')->get();
 
+        // Return an error if the cart is empty
         if ($cartItems->isEmpty()) {
             return response()->json(['message' => 'Cart is empty'], 400);
         }
 
         $totalPrice = 0;
-        // Calculate total price and check stock availability
+
+        // Calculate the total price and check if requested quantity is available
         foreach ($cartItems as $item) {
             if (!$item->product || $item->product->stock < $item->quantity) {
                 return response()->json(['message' => 'Stock unavailable for ' . $item->product->name], 400);
@@ -34,15 +40,15 @@ class OrderController extends Controller
             $totalPrice += $item->product->price * $item->quantity;
         }
 
-        // Create order with checkout_date
+        // Create a new order record with current timestamp
         $order = Order::create([
             'user_id' => $user->id,
             'total_price' => $totalPrice,
             'status' => 'pending',
-            'checkout_date' => now() // Set checkout date
+            'checkout_date' => now()
         ]);
 
-        // Add order items and update stock
+        // Create order items and deduct stock for each product
         foreach ($cartItems as $item) {
             OrderItem::create([
                 'order_id' => $order->id,
@@ -51,55 +57,69 @@ class OrderController extends Controller
                 'price' => $item->product->price
             ]);
 
-            // Reduce stock quantity
+            // Update product stock
             $item->product->stock -= $item->quantity;
             $item->product->save();
         }
 
-        // Clear the cart after successful checkout
+        // Clear the user's cart after successful checkout
         Cart::where('user_id', $user->id)->delete();
 
         return response()->json(['message' => 'Checkout successful', 'order_id' => $order->id]);
     }
 
-    // Fetch all orders (for employees only)
+    /**
+     * Retrieves all orders in the system (accessible by employees only)
+     */
     public function index()
     {
         $user = Auth::user();
+
+        // Only employees are authorized to view all orders
         if (!$user || $user->role !== 'employee') {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
 
+        // Return all orders with user and product details
         return response()->json(Order::with('user', 'items.product')->get());
     }
 
-    // Fetch orders for the authenticated user
+    /**
+     * Retrieves orders for the currently authenticated user
+     */
     public function myOrders()
     {
         $user = Auth::user();
+
+        // Ensure the user is authenticated
         if (!$user) {
             return response()->json(['message' => 'Unauthorized'], 401);
         }
 
+        // Return the user's orders with product details
         return response()->json(Order::where('user_id', $user->id)->with('items.product')->get());
     }
 
-    // Get a specific order (for employees only)
+    /**
+     * Displays details of a specific order by ID (employees only)
+     */
     public function show($id)
     {
         $user = Auth::user();
 
+        // Restrict access to employees only
         if (!$user || $user->role !== 'employee') {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
 
+        // Find the order by ID with related items and user
         $order = Order::with('items.product', 'user')->find($id);
 
         if (!$order) {
             return response()->json(['message' => 'Order not found'], 404);
         }
 
-        // Ensure items contain product details
+        // Add product names to each order item (fallback if missing)
         $order->items->each(function ($item) {
             $item->product_name = $item->product->name ?? 'Unknown Product';
         });
@@ -107,24 +127,26 @@ class OrderController extends Controller
         return response()->json($order);
     }
 
-    // Mark an order as completed (for employees only)
+    /**
+     * Marks a specific order as completed (employees only)
+     */
     public function markAsComplete($id)
     {
         $user = Auth::user();
 
-        // Only employees can mark an order as complete
+        // Ensure only employees can perform this action
         if (!$user || $user->role !== 'employee') {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
 
-        // Find the order by ID
+        // Retrieve the order by its ID
         $order = Order::find($id);
 
         if (!$order) {
             return response()->json(['message' => 'Order not found'], 404);
         }
 
-        // Update the order status to completed
+        // Update order status to 'completed'
         $order->status = 'completed';
         $order->save();
 
